@@ -17,7 +17,7 @@ def login_page() -> rx.Component:
                     rx.text(
                         "Bienvenido. Ingresa tus credenciales para continuar.",
                         size="3",
-                        color="gray"
+                        color="blue"
                     ),
 
                     # Campo correo
