@@ -1,0 +1,20 @@
+# Usa Node oficial
+FROM node:18-alpine
+
+# Setea el directorio de trabajo
+WORKDIR /app
+
+# Copia dependencias
+COPY package*.json ./
+
+# Instala dependencias
+RUN npm install
+
+# Copia el resto del proyecto
+COPY . .
+
+# Expone el puerto de React
+EXPOSE 3000
+
+# Comando por defecto
+CMD ["npm", "start"]
