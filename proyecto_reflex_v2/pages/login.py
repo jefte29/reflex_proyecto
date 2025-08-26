@@ -1,5 +1,14 @@
 import reflex as rx
 
+# Estado para manejar la acción del botón
+class LoginPageState(rx.State):
+    """Estado para la página de login."""
+
+    def handle_login(self):
+        """Redirige al gestor de eventos."""
+        return rx.redirect("/event-manager")  # ✅ Redirige a la nueva página
+
+
 def login_page() -> rx.Component:
     return rx.box(
         rx.color_mode.button(position="top-right"),
@@ -17,7 +26,7 @@ def login_page() -> rx.Component:
                     rx.text(
                         "Bienvenido. Ingresa tus credenciales para continuar.",
                         size="3",
-                        color="blue"
+                        color="gray"
                     ),
 
                     # Campo correo
@@ -51,12 +60,13 @@ def login_page() -> rx.Component:
                         width="100%",
                     ),
 
-                    # Botón principal
+                    # Botón principal (igual que antes pero con acción)
                     rx.button(
                         "Entrar",
                         width="100%",
                         size="3",
-                        color_scheme="blue"
+                        color_scheme="blue",
+                        on_click=LoginPageState.handle_login  # ✅ Acción agregada
                     ),
 
                     # Recordarme y Olvidé contraseña
@@ -67,7 +77,7 @@ def login_page() -> rx.Component:
                         width="100%",
                     ),
 
-                    # Registro
+                    # Registro (igual al original)
                     rx.text(
                         [
                             "¿No tienes cuenta? ",
@@ -90,6 +100,7 @@ def login_page() -> rx.Component:
             min_height="100vh",
         ),
 
+        # ✅ Fondo original restaurado
         bg="linear-gradient(135deg, #6366f1 0%, #22d3ee 100%)",
         min_height="100vh",
         padding="24px",

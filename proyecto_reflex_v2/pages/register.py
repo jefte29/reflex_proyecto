@@ -1,5 +1,42 @@
 import reflex as rx
 
+class RegisterState(rx.State):
+    show_success: bool = False
+
+    @rx.event
+    def register_user(self):
+        # Aquí iría la lógica real de guardar en BD, etc.
+        # Si todo sale bien, activamos el popup
+        self.show_success = True
+
+    @rx.event
+    def redirect_login(self):
+        return rx.redirect("/login")
+
+
+def success_dialog():
+    return rx.alert_dialog.root(
+        rx.alert_dialog.content(
+            rx.alert_dialog.title("Usuario registrado correctamente"),
+            rx.alert_dialog.description(
+                "Su cuenta ha sido creada exitosamente."
+            ),
+            rx.flex(
+                rx.alert_dialog.cancel(
+                    rx.button(
+                        "Aceptar",
+                        on_click=RegisterState.redirect_login
+                    )
+                ),
+                justify="end",
+                spacing="3",
+                margin_top="16px",
+            ),
+        ),
+        open=RegisterState.show_success,  # Se abre automáticamente si es True
+    )
+
+
 def register_page() -> rx.Component:
     return rx.center(
         rx.box(
@@ -22,6 +59,7 @@ def register_page() -> rx.Component:
                     rx.input(placeholder="Ej. juan.perez@up.ac.pa", type="email", id="email", width="100%", size="3"),
                     spacing="1", align="start", width="100%",
                 ),
+
                 # Nombre de Usuario
                 rx.vstack(
                     rx.text("Nombre de Usuario", size="3", weight="medium"),
@@ -31,9 +69,9 @@ def register_page() -> rx.Component:
                         width="100%",
                         size="3"
                     ),
-                     spacing="1", align="start", width="100%",
+                    spacing="1", align="start", width="100%",
                 ),
-                
+
                 # Contraseña
                 rx.vstack(
                     rx.text("Contraseña", size="3", weight="medium"),
@@ -46,7 +84,7 @@ def register_page() -> rx.Component:
                     ),
                     spacing="1", align="start", width="100%",
                 ),
-                
+
                 # Confirmar contraseña
                 rx.vstack(
                     rx.text("Confirmar Contraseña", size="3", weight="medium"),
@@ -59,7 +97,7 @@ def register_page() -> rx.Component:
                     ),
                     spacing="1", align="start", width="100%",
                 ),
-                
+
                 # Facultad / Carrera
                 rx.vstack(
                     rx.text("Facultad / Carrera", size="3", weight="medium"),
@@ -74,7 +112,13 @@ def register_page() -> rx.Component:
                 ),
 
                 # Botón de registro
-                rx.button("Registrarme", width="100%", size="3", color_scheme="green"),
+                rx.button(
+                    "Registrarme",
+                    width="100%",
+                    size="3",
+                    color_scheme="green",
+                    on_click=RegisterState.register_user
+                ),
 
                 # Enlace para volver
                 rx.link("¿Ya tienes cuenta? Inicia sesión", href="/login", color="blue", align="center"),
@@ -87,6 +131,7 @@ def register_page() -> rx.Component:
             box_shadow="0 10px 35px rgba(0,0,0,.15)",
             width="420px",
         ),
+        success_dialog(),  # 🔹 El popup debe ir aquí como hijo del center
         min_height="100vh",
         bg="linear-gradient(135deg, #22d3ee 0%, #6366f1 100%)",
         padding="24px",
