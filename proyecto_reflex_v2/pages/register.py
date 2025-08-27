@@ -2,7 +2,7 @@ import reflex as rx
 #from models import User  # Importamos el modelo
 from proyecto_reflex_v2.models import User
 
-
+#COMENTARIOOOOOOO PARA PUSHHHHHH!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 class RegisterState(rx.State):
     full_name: str = ""
     email: str = ""
