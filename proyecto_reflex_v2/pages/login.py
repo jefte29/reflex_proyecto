@@ -6,8 +6,8 @@ class LoginPageState(rx.State):
 
     def handle_login(self):
         """Redirige al gestor de eventos."""
-        return rx.redirect("/event-manager")  # ✅ Redirige a la nueva página
-
+        return rx.redirect("/event-manager")  # ✅ Redirige a la nueva página del estudiante
+        #return rx.redirect("/admin-manager") 
 
 def login_page() -> rx.Component:
     return rx.box(
