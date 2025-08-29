@@ -1,14 +1,30 @@
+from proyecto_reflex_v2.models import User
+from sqlmodel import select
 import reflex as rx
-
 # Estado para manejar la acción del botón
 class LoginPageState(rx.State):
-    """Estado para la página de login."""
+    email: str = ""
+    password: str = ""
+    error_message: str = ""
 
     def handle_login(self):
-        """Redirige al gestor de eventos."""
-        return rx.redirect("/event-manager")  # ✅ Redirige a la nueva página del estudiante
-        #return rx.redirect("/admin-manager") 
+        # Buscar usuario por email o username
+        with rx.session() as session:
+            user = session.query(User).filter(
+                (User.email == self.email) | (User.username == self.email)
+            ).first()
 
+            if not user:
+                self.error_message = "Usuario no encontrado"
+                return
+
+            if not user.verify_password(self.password):
+                self.error_message = "Contraseña incorrecta"
+                return
+
+        # Login correcto
+        return rx.redirect("/event-manager")
+    
 def login_page() -> rx.Component:
     return rx.box(
         rx.color_mode.button(position="top-right"),
@@ -38,8 +54,11 @@ def login_page() -> rx.Component:
                             id="email",
                             autocomplete="off",
                             width="100%",
-                            size="3"
+                            size="3",
+                            value=LoginPageState.email,
+                            on_change=LoginPageState.set_email,
                         ),
+
                         spacing="1",
                         align="start",
                         width="100%",
@@ -53,7 +72,9 @@ def login_page() -> rx.Component:
                             type="password",
                             id="password",
                             width="100%",
-                            size="3"
+                            size="3",
+                            value=LoginPageState.password,
+                            on_change=LoginPageState.set_password,
                         ),
                         spacing="1",
                         align="start",
@@ -66,7 +87,12 @@ def login_page() -> rx.Component:
                         width="100%",
                         size="3",
                         color_scheme="blue",
-                        on_click=LoginPageState.handle_login  # ✅ Acción agregada
+                        on_click=LoginPageState.handle_login
+                    ),
+
+                    rx.cond(
+                        LoginPageState.error_message != "",
+                        rx.text(LoginPageState.error_message, color="red", size="2")
                     ),
 
                     # Recordarme y Olvidé contraseña
@@ -100,7 +126,7 @@ def login_page() -> rx.Component:
             min_height="100vh",
         ),
 
-        # ✅ Fondo original restaurado
+        # Fondo original restaurado
         bg="linear-gradient(135deg, #6366f1 0%, #22d3ee 100%)",
         min_height="100vh",
         padding="24px",
