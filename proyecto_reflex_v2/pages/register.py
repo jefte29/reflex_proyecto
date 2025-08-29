@@ -9,7 +9,7 @@ class RegisterState(rx.State):
     username: str = ""
     password: str = ""
     confirm_password: str = ""
-    career_name: str = ""  # 👈 ahora sí existe career_id
+    career_name: str = ""  #  ahora sí existe career_id
     
     show_success: bool = False
 
@@ -25,7 +25,7 @@ class RegisterState(rx.State):
             email=self.email,
             username=self.username,
             password=self.password,
-            career_name=self.career_name,  # 👈 ahora sí existe career_id
+            career_name=self.career_name,  #  ahora sí existe career_id
         )
         with rx.session() as session:
             session.add(user)
@@ -41,6 +41,14 @@ class RegisterState(rx.State):
     def redirect_login(self):
         return rx.redirect("/login")
 
+    
+    def clear_inputs(self):
+        self.full_name = ""
+        self.email = ""
+        self.username = ""
+        self.password = ""
+        self.confirm_password =""
+        self.career_name = ""
 
 def success_dialog():
     """Popup de éxito al registrar usuario."""
@@ -62,6 +70,7 @@ def success_dialog():
 
 
 def register_page() -> rx.Component:
+    RegisterState.clear_inputs()
     return rx.center(
         rx.box(
             rx.vstack(

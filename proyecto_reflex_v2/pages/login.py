@@ -1,6 +1,7 @@
 from proyecto_reflex_v2.models import User
 from sqlmodel import select
 import reflex as rx
+
 # Estado para manejar la acción del botón
 class LoginPageState(rx.State):
     email: str = ""
@@ -22,10 +23,22 @@ class LoginPageState(rx.State):
                 self.error_message = "Contraseña incorrecta"
                 return
 
-        # Login correcto
+        # Login correcto: limpiar campos antes de redirigir
+        self.clear_inputs()
         return rx.redirect("/event-manager")
-    
+
+    # Función para limpiar los inputs
+    def clear_inputs(self):
+        self.email = ""
+        self.password = ""
+        self.error_message = ""
+
+
+# Página de login
 def login_page() -> rx.Component:
+    # Limpiar los campos cada vez que se llama a la función
+    LoginPageState.clear_inputs()
+
     return rx.box(
         rx.color_mode.button(position="top-right"),
 
@@ -58,7 +71,6 @@ def login_page() -> rx.Component:
                             value=LoginPageState.email,
                             on_change=LoginPageState.set_email,
                         ),
-
                         spacing="1",
                         align="start",
                         width="100%",
@@ -81,7 +93,7 @@ def login_page() -> rx.Component:
                         width="100%",
                     ),
 
-                    # Botón principal (igual que antes pero con acción)
+                    # Botón principal
                     rx.button(
                         "Entrar",
                         width="100%",
@@ -90,6 +102,7 @@ def login_page() -> rx.Component:
                         on_click=LoginPageState.handle_login
                     ),
 
+                    # Mensaje de error condicional
                     rx.cond(
                         LoginPageState.error_message != "",
                         rx.text(LoginPageState.error_message, color="red", size="2")
@@ -103,7 +116,7 @@ def login_page() -> rx.Component:
                         width="100%",
                     ),
 
-                    # Registro (igual al original)
+                    # Registro
                     rx.text(
                         [
                             "¿No tienes cuenta? ",
@@ -126,7 +139,6 @@ def login_page() -> rx.Component:
             min_height="100vh",
         ),
 
-        # Fondo original restaurado
         bg="linear-gradient(135deg, #6366f1 0%, #22d3ee 100%)",
         min_height="100vh",
         padding="24px",
