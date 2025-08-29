@@ -5,4 +5,3 @@ assets/external/
 __pycache__/
 EntornoV
 .states
-rxconfig.py
